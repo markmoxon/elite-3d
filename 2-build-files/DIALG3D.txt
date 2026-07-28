@@ -1,0 +1,92 @@
+   10 REM Generate new DIALS bitdump
+   20 REM Modified October 2024 to generate 3D view.  M. Fairbank.
+   30 :
+   40 XMAX=68*4:YMAX=17.5*4:REM ellipse dimensions
+   50 XC=125*4:YC=35*4-4:REM ellipse centre
+   60 RESTORE
+   70 DIAL%=1
+   80 :
+   90 REPEAT
+  100 MODE2
+  110 VDU19,1,6,0,0,0: REM col 1 = cyan
+  120 VDU19,2,1,0,0,0: REM col 2 = red
+  130 VDU19,3,7,0,0,0: REM col 7 = white
+  140 :
+  150 DIL%=&4000
+  160 ellipse_half_width%=XMAX:REM this is the width of the final ellipse we need to draw, i.e. matching Braben's code
+  170 ellipse_half_height%=YMAX:REM this is the height of the final ellipse we need to draw, i.e. matching Braben's code
+  180 ellipse_centre_x%=XC
+  190 ellipse_centre_y%=YC
+  200 size=100:REM this is the radius of the circlar scanner, in 3D
+  210 dist=0:REM this is how far back the scanner circle is, compared to the screen plane
+  220 READvz:REM this is how far back the camera is from the screen plane
+  230 READeye_sep_deltaX%: REM This is how far apart the eyes are, in 3D space
+  240 Cx=0:Cy=0:Cz=0:REM centre of 3D circle
+  250 Lx=0:Lz=size/2:Ly=0:REM radius vector of 3D circle
+  260 Wx=size/2:Wz=0:Wy=0:REM another radius vector of 3D circle
+  270 current_ellipse_width=vz/(vz+dist)*Wx*2
+  280 scale=ellipse_half_width%*2/current_ellipse_width:REM this ensures the final ellipse drawn will be exactly the right width for the Elite screen
+  290 PRINTTAB(0,0);"vz=";vz;" es="+STR$(ABS(eye_sep_deltaX%))
+  300 vy=ellipse_half_height%*2/((1/(vz-Lz+dist)-1/(vz+Lz+dist))*vz*scale*2)*2:REM this calculates how low the scanner needs to be drawn in 3d space, so that it appears as an ellipse of exactly the right height
+  310 origin_x%=ellipse_centre_x%:Y1=(-vy)*vz/(vz+Lz+dist)*scale:Y2=(-vy)*vz/(vz-Lz+dist)*scale
+  320 origin_y%=ellipse_centre_y%-(Y1+Y2)/2:REM put the drawing origin at exactly the right place such that the centre of the ellipse aligns with the centre braben used
+  330 GCOL1,1:PROCplot_scanner(eye_sep_deltaX%/2)
+  340 GCOL1,2:PROCplot_scanner(-eye_sep_deltaX%/2)
+  350 FORI%=0TO7:FORJ%=0TO511STEP4:!(J%+DIL%+I%*512)=!(J%+&6C00+I%*640):NEXT,
+  360 OSCLI"SAVE P.DIALSH"+STR$DIAL%+" "+STR$~DIL%+"+E00 0000 7000"
+  370 DIAL%=DIAL%+1
+  380 UNTILDIAL%=4
+  390 END
+  400 :
+  410 DEFPROCplot_scanner(deltaX_eye)
+  420 phi=PI/10*1.2:psi=3*PI/4
+  430 REM Find top and bottom and left and right of the ellipse
+  440 PROCcoor( Lx ,0  , Lz ,deltaX_eye):X1=Xp:Y1=Yp:REM vertical mid line through plane
+  450 PROCcoor(-Lx ,0  ,-Lz ,deltaX_eye):X2=Xp:Y2=Yp:REM vertical mid line through plane
+  460 PROCcoor( Wx ,0  , Wz ,deltaX_eye):X3=Xp:Y3=Yp:REM horizontal mid line through plane
+  470 PROCcoor(-Wx ,0  ,-Wz ,deltaX_eye):X4=Xp:Y4=Yp:REM horizontal mid line through plane
+  480 PROCcoor( Cx ,Cy , Cz ,deltaX_eye):Xc=Xp:Yc=Yp:REM centre of ellipse.  Note this centre is shifted up slightly due to perspective!
+  490 :
+  500 REM draw ellipse
+  510 FORa=0TO2*PI STEP 0.05:PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, a, deltaX_eye):PLOT69,Xp,Yp:NEXT
+  520 MOVE X1,Y1:PLOT21,X2,Y2:REM vertical line
+  530 MOVE X3,Y3:PLOT21,X4,Y4:REM horiz line
+  540 REM draw lines from phi to psi
+  550 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, +phi, deltaX_eye):X1=Xp:Y1=Yp
+  560 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, +psi, deltaX_eye):X2=Xp:Y2=Yp
+  570 MOVE X1,Y1:PLOT21,X2,Y2
+  580 N%=5
+  590 FOR I%=0TON%:PLOT69, Xc+2 +(X1-Xc-2)/N%*I%,Yc+2+(Y1-Yc-2)/N%*I%:NEXT
+  600 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, -phi, deltaX_eye):X1=Xp:Y1=Yp
+  610 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, -psi, deltaX_eye):X2=Xp:Y2=Yp
+  620 MOVE X1,Y1:PLOT21,X2,Y2
+  630 FOR I%=0TON%:PLOT69, Xc+2 +(X1-Xc-2)/N%*I%,Yc+2+(Y1-Yc-2)/N%*I%:NEXT
+  640 ang1=0.95*PI/3
+  650 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, -ang1, deltaX_eye):X1=Xp:Y1=Yp
+  660 PROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, +ang1, deltaX_eye):X2=Xp:Y2=Yp
+  670 MOVE X1,Y1:PLOT21,X2,Y2:REM horizontal line
+  680 ang1=2.05*PI/3
+  690 PROCcalc_point_on_ellipse(Cx ,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, -ang1, deltaX_eye):X1=Xp:Y1=Yp
+  700 PROCcalc_point_on_ellipse(Cx ,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, +ang1, deltaX_eye):X2=Xp:Y2=Yp
+  710 MOVE X1,Y1:PLOT21,X2,Y2:REM horizontal line
+  720 PLOT69,Xc,Yc:PLOT69,Xc-8,Yc:PLOT69,Xc+8,Yc:PLOT69,Xc,Yc+4:PLOT69,Xc,Yc-4:REM draw small central cross
+  730 ENDPROC
+  740:
+  750 DEFPROCcoor(X,Y,Z, deltaX_eye)
+  760 REM put 3D point(X,Y,Z) through a perspective transform
+  770 LOCALP
+  780 eye_sep_pixels=deltaX_eye*vz/(dist+vz)*scale:REM this is calculated to ensure that the red/blue z-axis lines cross over exactly on the plane of the display screen
+  790 P=vz/(vz+Z+dist)*scale:Xp=(X+deltaX_eye)*P+origin_x%-eye_sep_pixels:Yp=(Y-vy)*P+origin_y%
+  800 ENDPROC
+  810 :
+  820 DEFPROCcalc_point_on_ellipse(Cx,Cy,Cz, Lx,Ly,Lz, Wx,Wy,Wz, a, deltaX_eye)
+  830 REM calculates the perspective-transformed coordinates of a point on the 3D circle at parametric angle a.  The circle has centre (Cx,Cy,Cz), and two perpendicular radius vectors (Lx,Ly,Lz) and (Wx,Wy,Wz)
+  840 LOCALX,Y,Z
+  850 X=Wx*SINa+Lx*COSa+Cx:Y=Ly*COSa+Wy*SINa+Cy:Z=Cz+Lz*COSa+Wz*SINa:REM (X,Y,Z) is now the 3D point on the 3D circle
+  860 PROCcoor(X,Y,Z, deltaX_eye):REM convert to 2D via perspective
+  870 ENDPROC
+  880 :
+  890 REM values of vz, eye_sep_deltaX%
+  900 DATA 600,-15
+  910 DATA 525,-25
+  920 DATA 500,-40

@@ -9,6 +9,9 @@
 # This script converts the loading screen title mode 2 dashboard images into
 # pure white, for use with the anaglyph 3D version of Elite
 #
+# For the four levels of anaglyph scanner, it only converts the dials to white,
+# leaving the scanner ellipses in anaglyph colour
+#
 # We need to do this for the title screen as the original images are not white,
 # and if we decided to whiten them using the palette, this would cause an
 # unpleasant colour flip as the palettes are not set up until the I/O processor
@@ -19,6 +22,28 @@
 # and that is cyan in the anaglyph 3D view, not white.
 #
 # ******************************************************************************
+
+
+def load_file(data_block, name):
+    print("Reading " + name)
+    input_file = open("1-source-files/images/" + name, "rb")
+    data_block.extend(input_file.read())
+    input_file.close()
+
+
+def save_file(data_block, name):
+    print("Writing " + name)
+    output_file = open("1-source-files/images/" + name, "wb")
+    output_file.write(data_block)
+    output_file.close()
+
+
+def merge_file(data_block, name):
+    print("Merging " + name)
+    merge_block = bytearray()
+    load_file(merge_block, name)
+    for n in range(0, len(data_block)):
+        data_block[n] = data_block[n] | merge_block[n]
 
 
 def convert_to_white(data_block):
@@ -32,35 +57,42 @@ def convert_to_white(data_block):
 print()
 print("BBC 6502 Second Processor Elite dashboard whitener")
 
-# Convert dashboard image
+# Convert anaglyph dashboard images
 
 data_block = bytearray()
-elite_file = open("1-source-files/images/P.DIALS2P.bin", "rb")
-data_block.extend(elite_file.read())
-elite_file.close()
+load_file(data_block, "P.DIALS.bin")
 convert_to_white(data_block)
-output_file = open("1-source-files/images/P.DIALSW.bin", "wb")
-output_file.write(data_block)
-output_file.close()
+merge_file(data_block, "P.DIALSH1.bin")
+save_file(data_block, "P.DIALSH1W.bin")
+
+data_block = bytearray()
+load_file(data_block, "P.DIALS.bin")
+convert_to_white(data_block)
+merge_file(data_block, "P.DIALSH2.bin")
+save_file(data_block, "P.DIALSH2W.bin")
+
+data_block = bytearray()
+load_file(data_block, "P.DIALS.bin")
+convert_to_white(data_block)
+merge_file(data_block, "P.DIALSH3.bin")
+save_file(data_block, "P.DIALSH3W.bin")
+
+# Convert standard dashboard image
+
+data_block = bytearray()
+load_file(data_block, "P.DIALS2P.bin")
+convert_to_white(data_block)
+save_file(data_block, "P.DIALSW.bin")
 
 # Convert Acornsoft image
 
 data_block = bytearray()
-elite_file = open("1-source-files/images/Z.ACSOFT.bin", "rb")
-data_block.extend(elite_file.read())
-elite_file.close()
+load_file(data_block, "Z.ACSOFT.bin")
 convert_to_white(data_block)
-output_file = open("1-source-files/images/Z.ACSOFTW.bin", "wb")
-output_file.write(data_block)
-output_file.close()
+save_file(data_block, "Z.ACSOFTW.bin")
 
 # Convert copyright image
-
 data_block = bytearray()
-elite_file = open("1-source-files/images/Z.(C)ASFT.bin", "rb")
-data_block.extend(elite_file.read())
-elite_file.close()
+load_file(data_block, "Z.(C)ASFT.bin")
 convert_to_white(data_block)
-output_file = open("1-source-files/images/Z.(C)ASFTW.bin", "wb")
-output_file.write(data_block)
-output_file.close()
+save_file(data_block, "Z.(C)ASFTW.bin")
