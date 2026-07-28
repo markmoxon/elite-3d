@@ -57,6 +57,11 @@ ENDIF
 
 PUTFILE "3-assembled-output/P.CODE.bin", "P.CODE", &000E20, &001065
 
+PUTFILE "1-source-files/images/P.DIALSW.bin", "I.DASH0", &FF7000, &FF7000
+PUTFILE "1-source-files/images/P.DIALSH1W.bin", "I.DASH1", &FF7000, &FF7000
+PUTFILE "1-source-files/images/P.DIALSH2W.bin", "I.DASH2", &FF7000, &FF7000
+PUTFILE "1-source-files/images/P.DIALSH3W.bin", "I.DASH3", &FF7000, &FF7000
+
 IF _SNG45
  PUTFILE "1-source-files/boot-files/$.!BOOT.bin", "!BOOT", &002000, &00202B
  PUTFILE "1-source-files/boot-files/$.SCREEN.bin", "SCREEN", &FF7C00, &000000

@@ -3632,9 +3632,11 @@ ENDIF
                         \
                         \   * 0 = disable parallax
                         \
-                        \   * 1 = apply medium parallax
+                        \   * 1 = apply low parallax
                         \
-                        \   * 2 = apply high parallax
+                        \   * 2 = apply medium parallax
+                        \
+                        \   * 3 = apply high parallax
 
 .maxParallaxP
 
@@ -4167,11 +4169,13 @@ ENDIF
 
 .apiBuffer
 
- EQUB 3                 \ The number of bytes to transmit with this command
+ EQUB 4                 \ The number of bytes to transmit with this command
 
  EQUB 2                 \ The number of bytes to receive with this command
 
- EQUB 0                 \ The parameter to send
+ EQUB 0                 \ The first parameter to send
+
+ EQUB 0                 \ The second parameter to send (optional)
 
                         \ --- End of added code ------------------------------->
 
@@ -4437,16 +4441,22 @@ ENDIF
 
 .SetSunParallax
 
- STA apiBuffer+2        \ Set the parameter to A
+ STA apiBuffer+3        \ Set the second parameter to A
+
+ LDA parallaxLevel      \ Set the second parameter to the parallax level
+ STA apiBuffer+2
 
  LDX #LO(apiBuffer)     \ Set (Y X) to point to the apiBuffer parameter
  LDY #HI(apiBuffer)     \ block
 
  LDA #254               \ Set A = 254 for the SetSunParallax OSWORD call
 
- JMP OSWORD             \ Send an OSWORD command to the I/O processor to set the
-                        \ amoutn of parallax for the sun, returning from the
-                        \ subroutine using a tail call
+ JSR OSWORD             \ Send an OSWORD command to the I/O processor to set the
+                        \ amount of parallax for the sun and load the correct
+                        \ dashboard image
+
+ JMP ShowNewDashboard   \ Draw the new dashboard, returning from the subroutine
+                        \ using a tail call
 
                         \ --- End of added code ------------------------------->
 
@@ -4484,6 +4494,67 @@ ENDIF
  RTS                    \ Return from the subroutine
 
                         \ --- End of added code ------------------------------->
+
+\ ******************************************************************************
+\
+\       Name: ShowNewDashboard
+\       Type: Subroutine
+\   Category: Dashboard
+\    Summary: Draw a brand new dashboard from scratch
+\
+\ ******************************************************************************
+
+.ShowNewDashboard
+
+ LDX #0                 \ Set up a counter in X to work our way through all the
+                        \ ship slots in FRIN
+
+.newd1
+
+ LDA FRIN,X             \ Fetch the ship type in slot X
+
+ BEQ newd4              \ If the slot contains 0 then it is empty and we have
+                        \ checked all the slots (as they are always shuffled
+                        \ down in the main loop to close up and gaps), so jump
+                        \ to newd4 as we are done
+
+ BMI newd3              \ If the slot contains a ship type with bit 7 set, then
+                        \ it contains the planet or the sun, so jump to newd3
+                        \ to skip this slot, as the planet and sun don't appear
+                        \ on the scanner
+
+ STA TYPE               \ Store the ship type in TYPE
+
+ JSR GINF               \ Call GINF to get the address of the data block for
+                        \ ship slot X and store it in INF
+
+ LDY #31                \ We now want to copy the first 32 bytes from the ship's
+                        \ data block into INWK, so set a counter in Y
+
+.newd2
+
+ LDA (INF),Y            \ Copy the Y-th byte from the data block pointed to by
+ STA INWK,Y             \ INF into the Y-th byte of INWK workspace
+
+ DEY                    \ Decrement the counter to point at the next byte
+
+ BPL newd2              \ Loop back to newd2 until we have copied all 32 bytes
+
+ JSR SCAN               \ Call SCAN to plot this ship on the scanner
+
+.newd3
+
+ INX                    \ Increment X to point to the next ship slot
+
+ BNE newd1              \ Loop back up to process the next slot (this BNE is
+                        \ effectively a JMP as X will never be zero)
+
+.newd4
+
+ JSR DOT                \ Draw the compass dot
+
+ JMP DIALS              \ Update the dials and return from the subroutine using
+                        \ a tail call
 
  SKIPTO &1000
 

@@ -162,6 +162,12 @@
 
  OSWORD = &FFF1         \ The address for the OSWORD routine
 
+                        \ --- Mod: Code added for anaglyph 3D: ---------------->
+
+ OSCLI = &FFF7          \ The address for the OSCLI routine
+
+                        \ --- End of added code ------------------------------->
+
 \ ******************************************************************************
 \
 \       Name: ZP
@@ -403,6 +409,18 @@
 
  SKIP 1                 \ Storage for the amount of parallax to add to the right
                         \ eye in the ApplyParallax and pixel routines
+
+.parallaxLevel
+
+ SKIP 1                 \ The level of parallax to apply:
+                        \
+                        \   * 0 = disable parallax
+                        \
+                        \   * 1 = apply low parallax
+                        \
+                        \   * 2 = apply medium parallax
+                        \
+                        \   * 3 = apply high parallax
 
                         \ --- End of added code ------------------------------->
 
@@ -10701,7 +10719,20 @@ ENDMACRO
 .SetSunParallax
 
  LDY #2                 \ Fetch byte #2 from the parameter block, which contains
- LDA (OSSC),Y           \ the parameter that controls the operation
+ LDA (OSSC),Y           \ the parallax level
+
+ STA parallaxLevel      \ Store the parallax level for use in the scanner code
+
+ CLC                    \ Set the dashboard filename to DASH0 to DASH4 in the
+ ADC #'0'               \ loadDashboard load command
+ STA loadDashboard+8
+
+ LDX #LO(loadDashboard) \ Load the correct dashboard image for the new parallax
+ LDY #HI(loadDashboard) \ level
+ JSR OSCLI
+
+ INY                    \ Fetch byte #3 from the parameter block, which contains
+ LDA (OSSC),Y           \ the amount of parallax to apply to the sun
 
  LSR A                  \ Split the amount of parallax between the eyes, into
  STA sunParallaxL       \ sunParallaxL and sunParallaxR
@@ -10771,6 +10802,24 @@ ENDMACRO
  ROR T                  \ making sure to retain the sign
 
  RTS                    \ Return from the subroutine
+
+                        \ --- End of added code ------------------------------->
+
+\ ******************************************************************************
+\
+\       Name: loadDashboard
+\       Type: Subroutine
+\   Category: Dashboard
+\    Summary: Operating system command string for loading a dashboard image
+\
+\ ******************************************************************************
+
+                        \ --- Mod: Code added for anaglyph 3D: ---------------->
+
+.loadDashboard
+
+ EQUS "L.I.DASHx FFFF7000"
+ EQUB 13
 
                         \ --- End of added code ------------------------------->
 
