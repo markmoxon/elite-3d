@@ -79,7 +79,7 @@ endif
 
 variant-number=2
 folder=/sng45
-suffix=-3d-sng45
+suffix=-3d
 boot=-opt 2
 
 .PHONY:all
