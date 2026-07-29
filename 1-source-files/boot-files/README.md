@@ -1,6 +1,6 @@
-# Boot files for the 6502 Second Processor version of Elite
+# Boot files for Elite 3D
 
-This folder contains the boot file from the original sources for the 6502 Second Processor version of Elite on Ian Bell's personal website.
+This folder contains the boot file from the original sources for Elite 3D on Ian Bell's personal website.
 
 * [$.!BOOT.bin]($.!BOOT.bin) is the original boot file from the game disc
 

@@ -1,6 +1,6 @@
-# Image binaries for the 6502 Second Processor version of Elite
+# Image binaries for Elite 3D
 
-This folder contains the image binaries from the original sources for the 6502 Second Processor version of Elite on Ian Bell's personal website.
+This folder contains the image binaries from the original sources for Elite 3D on Ian Bell's personal website.
 
 * [P.DATE2P.bin](P.DATE2P.bin) is an unused image that was used to datestamp the title screen during development
 

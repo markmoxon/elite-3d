@@ -1,6 +1,6 @@
-# Reference binaries for the 6502 Second Processor version of Elite
+# Reference binaries for Elite 3D
 
-This folder contains the binaries from the original sources for the 6502 Second Processor version of Elite on Ian Bell's personal website, as well as reference binaries for the other releases.
+This folder contains the binaries from the original sources for Elite 3D on Ian Bell's personal website, as well as reference binaries for the other releases.
 
 * [executive](executive) contains the binaries from the Executive version
 

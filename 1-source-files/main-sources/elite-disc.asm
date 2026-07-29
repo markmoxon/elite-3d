@@ -1,6 +1,6 @@
 \ ******************************************************************************
 \
-\ 6502 SECOND PROCESSOR ELITE DISC IMAGE SCRIPT
+\ ELITE 3D DISC IMAGE SCRIPT
 \
 \ 6502 Second Processor Elite was written by Ian Bell and David Braben and is
 \ copyright Acornsoft 1985

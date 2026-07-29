@@ -1,4 +1,4 @@
-# Build files for the 6502 Second Processor version of Elite
+# Build files for Elite 3D
 
 This folder contains support scripts for building the 6502 Second Processor version of Elite.
 

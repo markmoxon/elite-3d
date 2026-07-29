@@ -1,6 +1,6 @@
-# Source files for the 6502 Second Processor version of Elite
+# Source files for Elite 3D
 
-This folder contains the source files for the 6502 Second Processor version of Elite.
+This folder contains the source files for Elite 3D.
 
 * [fonts](fonts) contains the binaries for the game's text font
 

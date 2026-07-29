@@ -1,6 +1,6 @@
-# Annotated source code for the 6502 Second Processor version of Elite
+# Annotated source code for Elite 3D
 
-This folder contains the annotated source code for the 6502 Second Processor version of Elite.
+This folder contains the annotated source code for Elite 3D.
 
 * Main source files:
 

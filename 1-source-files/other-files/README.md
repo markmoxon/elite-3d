@@ -1,6 +1,6 @@
-# Other source files for the 6502 Second Processor version of Elite
+# Other source files for Elite 3D
 
-This folder contains commander files for the 6502 Second Processor version of Elite.
+This folder contains commander files for Elite 3D.
 
 ---
 

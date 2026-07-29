@@ -1,6 +1,6 @@
-# Font binaries for the 6502 Second Processor version of Elite
+# Font binaries for Elite 3D
 
-This folder contains the font binaries from the original sources for the 6502 Second Processor version of Elite on Ian Bell's personal website.
+This folder contains the font binaries from the original sources for Elite 3D on Ian Bell's personal website.
 
 * [P.FONT.bin](P.FONT.bin) is the standard BBC Micro font, extracted from the MOS ROM
 

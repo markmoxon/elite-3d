@@ -1,6 +1,6 @@
 \ ******************************************************************************
 \
-\ 6502 SECOND PROCESSOR ELITE README
+\ ELITE 3D README
 \
 \ 6502 Second Processor Elite was written by Ian Bell and David Braben and is
 \ copyright Acornsoft 1985

@@ -1,6 +1,6 @@
 \ ******************************************************************************
 \
-\ 6502 SECOND PROCESSOR ELITE I/O LOADER (PART 2) SOURCE
+\ ELITE 3D I/O LOADER (PART 2) SOURCE
 \
 \ 6502 Second Processor Elite was written by Ian Bell and David Braben and is
 \ copyright Acornsoft 1985
