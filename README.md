@@ -22,7 +22,7 @@ See [my profile](https://github.com/markmoxon) for more repositories to explore.
 
 This repository contains source code for Elite 3D on the BBC Micro with 6502 Second Processor or BBC Master Turbo.
 
-Elite 3D is an anaglyph 3D version of BBC Micro Elite. It is the full game, in 3D. You will need a decent pair of 3D glasses, typically red for the left eye and cyan for the right eye (although Elite 3D supports five different colour schemes). For more information, see the [elite.bbcelite.com website](https://elite.bbcelite.com/hacks/elite_3d.html).
+Elite 3D is an anaglyph 3D version of BBC Micro Elite. It is the full game, in 3D. You will need a decent pair of 3D glasses, typically red for the left eye and cyan for the right eye (although Elite 3D supports five different colour schemes). For more information, see the [elite.bbcelite.com website](https://elite.bbcelite.com/hacks/elite_3d/).
 
 This repository contains the full source code for Elite 3D, which you can build yourself on a modern computer. See below for more details on [browsing the source code](#browsing-the-source-in-an-ide) and [building Elite 3D from the source](#building-elite-3d-from-the-source).
 
@@ -88,7 +88,7 @@ If you want to browse the source in an IDE, you might find the following useful.
 
 * The annotated source files contain both the original Acornsoft code and all of the modifications made to convert the original into Elite 3D, so you can look through the source to see exactly what's changed in order to convert it for two players. Any code that I've removed from the original version is commented out in the source files, so when they are assembled they produce the Elite 3D binaries, while still containing details of all the modifications. You can find all the diffs by searching the sources for `Mod:`.
 
-* Elite 3D incorporates the flicker-free algorithm from BBC Master Elite, which reduces the amount of flicker in the ship-drawing routines, and it also includes flicker-free planet-drawing routines. For more information on flicker-free Elite, see the [hacks section of the accompanying website](https://elite.bbcelite.com/hacks/flicker-free_elite.html).
+* Elite 3D incorporates the flicker-free algorithm from BBC Master Elite, which reduces the amount of flicker in the ship-drawing routines, and it also includes flicker-free planet-drawing routines. For more information on flicker-free Elite, see the [hacks section of the accompanying website](https://elite.bbcelite.com/hacks/flicker-free_elite/).
 
 * There are loads of routines and variables in Elite - literally hundreds. You can find them in the source files by searching for the following: `Type: Subroutine`, `Type: Variable`, `Type: Workspace` and `Type: Macro`.
 
