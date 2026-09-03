@@ -59,7 +59,7 @@ PUTFILE "3-assembled-output/P.CODE.bin", "P.CODE", &000E20, &001065
 
 IF _SNG45
  PUTFILE "1-source-files/boot-files/$.!BOOT.bin", "!BOOT", &002000, &00202B
- PUTFILE "1-source-files/boot-files/$.SCREEN.bin", "SCREEN", &FF7C00, &000000
+ PUTFILE "1-source-files/images/$.SCREEN.bin", "SCREEN", &FF7C00, &000000
 ENDIF
 
  PUTFILE "3-assembled-output/README.txt", "README", &FFFFFF, &FFFFFF
