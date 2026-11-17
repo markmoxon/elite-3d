@@ -7992,7 +7992,7 @@ ENDMACRO
  EQUW SAFE              \            252 (&FC)    12 = Do nothing
  EQUW SAFE              \            253 (&FD)    13 = Do nothing
 
-                        \ --- Mod: Code added for anaglyph 3D: ---------------->
+                        \ --- Mod: Code removed for anaglyph 3D: -------------->
 
 \EQUW SAFE              \            254 (&FE)    14 = Do nothing
 
