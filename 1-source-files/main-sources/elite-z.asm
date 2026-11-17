@@ -7992,14 +7992,22 @@ ENDMACRO
  EQUW SAFE              \            252 (&FC)    12 = Do nothing
  EQUW SAFE              \            253 (&FD)    13 = Do nothing
 
-                        \ --- Mod: Code removed for speed control: ------------>
+                        \ --- Mod: Code added for anaglyph 3D: ---------------->
 
 \EQUW SAFE              \            254 (&FE)    14 = Do nothing
-\EQUW SAFE              \            255 (&FF)    15 = Do nothing
 
                         \ --- And replaced by: -------------------------------->
 
  EQUW SetSunParallax    \            254 (&FE)    14 = Set the sun's parallax
+
+                        \ --- End of replacement ------------------------------>
+
+                        \ --- Mod: Code removed for speed control: ------------>
+
+\EQUW SAFE              \            255 (&FF)    15 = Do nothing
+
+                        \ --- And replaced by: -------------------------------->
+
  EQUW WaitForSync       \            255 (&FF)    15 = Control the game speed
 
                         \ --- End of replacement ------------------------------>
