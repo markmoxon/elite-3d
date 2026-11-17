@@ -4156,48 +4156,22 @@ ENDIF
 
 \ ******************************************************************************
 \
-\       Name: apiBuffer
+\       Name: sunBuffer
 \       Type: Variable
 \   Category: Universe editor
-\    Summary: Buffer for OSWORD calls to the I/O processor's API
+\    Summary: Buffer for sun-related OSWORD calls to the I/O processor's API
 \
 \ ******************************************************************************
 
-                        \ --- Mod: Code added for speed control: -------------->
+                        \ --- Mod: Code added for anaglyph 3D: ---------------->
 
-.apiBuffer
+.sunBuffer
 
  EQUB 3                 \ The number of bytes to transmit with this command
 
  EQUB 2                 \ The number of bytes to receive with this command
 
  EQUB 0                 \ The parameter to send
-
-                        \ --- End of added code ------------------------------->
-
-\ ******************************************************************************
-\
-\       Name: RestartSync
-\       Type: Subroutine
-\   Category: Main loop
-\    Summary: Restart the sync counter
-\
-\ ******************************************************************************
-
-                        \ --- Mod: Code added for speed control: -------------->
-
-.RestartSync
-
- STZ apiBuffer+2        \ Set the parameter to zero to restart the sync counter
-
- LDX #LO(apiBuffer)     \ Set (Y X) to point to the apiBuffer parameter
- LDY #HI(apiBuffer)     \ block
-
- LDA #255               \ Set A = 255 for the SpeedControl OSWORD call
-
- JMP OSWORD             \ Send an OSWORD command to the I/O processor to reset
-                        \ the sync counter, returning from the subroutine
-                        \ using a tail call
 
                         \ --- End of added code ------------------------------->
 
@@ -4214,13 +4188,10 @@ ENDIF
 
 .WaitForSync
 
- LDA #1
- STA apiBuffer+2        \ Set the parameter to zero to restart the sync counter
-
- LDX #LO(apiBuffer)     \ Set (Y X) to point to the apiBuffer parameter
- LDY #HI(apiBuffer)     \ block
-
  LDA #255               \ Set A = 255 for the SpeedControl OSWORD call
+
+ LDX #LO(WSCpars)       \ Set (Y X) to point to the WSCpars parameter block,
+ LDY #HI(WSCpars)       \ which doesn't transmit or receive any data
 
  JMP OSWORD             \ Send an OSWORD command to the I/O processor to reset
                         \ the sync counter, returning from the subroutine
@@ -4433,14 +4404,14 @@ ENDIF
 \
 \ ******************************************************************************
 
-                        \ --- Mod: Code added for speed control: -------------->
+                        \ --- Mod: Code added for anaglyph 3D: ---------------->
 
 .SetSunParallax
 
- STA apiBuffer+2        \ Set the parameter to A
+ STA sunBuffer+2        \ Set the parameter to A
 
- LDX #LO(apiBuffer)     \ Set (Y X) to point to the apiBuffer parameter
- LDY #HI(apiBuffer)     \ block
+ LDX #LO(sunBuffer)     \ Set (Y X) to point to the sunBuffer parameter block
+ LDY #HI(sunBuffer)
 
  LDA #254               \ Set A = 254 for the SetSunParallax OSWORD call
 
@@ -32513,19 +32484,7 @@ ENDIF
 
 .TT100
 
-                        \ --- Mod: Code added for speed control: -------------->
-
- JSR RestartSync        \ Restart the sync counter
-
-                        \ --- End of added code ------------------------------->
-
  JSR M%                 \ Call M% to iterate through the main flight loop
-
-                        \ --- Mod: Code added for speed control: -------------->
-
- JSR WaitForSync        \ Wait for the sync counter to count down
-
-                        \ --- End of added code ------------------------------->
 
  DEC DLY                \ Decrement the delay counter in DLY, so any in-flight
                         \ messages get removed once the counter reaches zero
@@ -33076,6 +33035,12 @@ ENDIF
  LDX #&FF               \ Set the stack pointer to &01FF, which is the standard
  TXS                    \ location for the 6502 stack, so this instruction
                         \ effectively resets the stack
+
+                        \ --- Mod: Code added for speed control: -------------->
+
+ JSR WaitForSync        \ Wait until the sync counter reaches 0
+
+                        \ --- End of added code ------------------------------->
 
  LDX GNTMP              \ If the laser temperature in GNTMP is non-zero,
  BEQ EE20               \ decrement it (i.e. cool it down a bit)
